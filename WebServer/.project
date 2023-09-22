@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>WebDemo</name>
-	<comment>Project WebDemo created by Buildship.</comment>
+	<name>WebServer</name>
+	<comment>Project WebServer created by Buildship.</comment>
 	<projects>
 	</projects>
 	<buildSpec>
