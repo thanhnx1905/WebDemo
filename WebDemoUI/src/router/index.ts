@@ -1,7 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 
 import Home from '../views/Home.vue'
 import About from '../views/About.vue'
+import Login from '../views/Login.vue'
+import '../assets/ts/loaduicom.ts'
 
 const routes = [
     {
@@ -12,14 +14,14 @@ const routes = [
         path: '/about',
         component: About
     },
-    // {
-    //     path: '/contact',
-    //     component: Contact
-    // },
+    {
+        path: '/login',
+        component: Login
+    },
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes: routes
 })
 

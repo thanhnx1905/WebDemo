@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <div class="nav">
-            <router-link to="/">Home</router-link>|<router-link to="/about">About</router-link>
+            <router-link to="/">Home</router-link>|<router-link to="/about">About</router-link>|<router-link to="/login">Login</router-link>
         </div>
         <router-view />
     </div>
@@ -15,6 +15,7 @@ export default defineComponent({
 <style lang="scss">
 #app {
     text-align: center;
+    
 
     .logo {
         width: 20%;
@@ -22,7 +23,7 @@ export default defineComponent({
 }
 .nav {
     padding: 30px 0 100px 0;
-
+    display: inline-block !important;
     a {
         font-weight: 500;
         color: var(--textColor);
