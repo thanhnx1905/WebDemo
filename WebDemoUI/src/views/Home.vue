@@ -1,6 +1,6 @@
 <template>
-    <div id="home">
-      <!-- <img class="logo" src="../assets/logo.png" alt="logo" /> -->
-      <h1>👋Hello world🌎</h1>
-    </div>
+	<main id="Home-page">
+		<h1>Home</h1>
+		<p>This is the home page</p>
+	</main>
 </template>

@@ -1,37 +1,24 @@
 <template>
-    <div id="app">
-        <div class="nav">
+    <div class="app">
+        <!-- <div class="nav">
             <router-link to="/">Home</router-link>|<router-link to="/about">About</router-link>|<router-link to="/login">Login</router-link>
-        </div>
+        </div> -->
+        <Sidebar :menuSidebar="dataMenuSidebar"/>
         <router-view />
     </div>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-    name: 'App',
-})
-</script>
-<style lang="scss">
-#app {
-    text-align: center;
+<script lang = "ts" setup>
+import Sidebar from './components/Sidebar.vue';
+import { ref, reactive } from 'vue';
+import MenuSidebar from './components/common/MenuSidebar'
+import MSidebarDetail from './components/common/MSidebarDetail'
+
+let mSidebarDetails : Array<MSidebarDetail> = [];
+mSidebarDetails.push(new MSidebarDetail("/", "home_house_icon.png", "Home"));
+mSidebarDetails.push(new MSidebarDetail("/about", "about_icon.png", "About"));
+mSidebarDetails.push(new MSidebarDetail("/team", "team_icon.png", "Team"));
+mSidebarDetails.push(new MSidebarDetail("/contact", "contact_icon.png", "Contact"));
+mSidebarDetails.push(new MSidebarDetail("/setting", "setting_icon.png", "Settings"));
     
-
-    .logo {
-        width: 20%;
-    }
-}
-.nav {
-    padding: 30px 0 100px 0;
-    display: inline-block !important;
-    a {
-        font-weight: 500;
-        color: var(--textColor);
-        margin: 0 5px;
-    }
-
-    a.router-link-exact-active {
-        color: var(--linkActiveColor);
-    }
-}
-</style>
+const dataMenuSidebar = reactive(new MenuSidebar("logo.png", mSidebarDetails));
+</script>
