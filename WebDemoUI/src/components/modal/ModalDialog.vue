@@ -1,24 +1,52 @@
 <template>
-  <div class="modal">
-    <div class="modal-content">
-      <div class="title">
-        <slot name="title"></slot>
+  <div :id="idModal">
+    <div class="modal">
+      <div class="modal-content">
+        <div class="title">
+          <slot name="title"></slot>
+        </div>
+        <hr class="line">
+        <slot name="content"></slot>
+        <hr class="line-buttom">
+        <button @click=closeDialog() class="button">Close</button>
       </div>
-      <hr class="line">
-      <slot name="content"></slot>
-      <hr class="line-buttom">
-      <button @click=closeDialog() class="button">Close</button>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { defineProps, defineEmits, PropType, ref } from 'vue';
+import { onMounted, onBeforeUnmount } from 'vue'
+
+let tag = ref<HTMLElement>();
+const idModal = ref<string>(Math.floor(Math.random() * 10000).toString());
+
+if (window.modalZIndex) {
+  window.modalZIndex++;
+} else {
+  window.modalZIndex = 10;
+}
+onMounted(() => {
+
+  tag.value = document.getElementById(idModal.value);
+  (tag.value.getElementsByClassName("modal")[0] as HTMLElement).style.zIndex = (window.modalZIndex + 1).toString();
+  let div = document.createElement("div");
+  div.classList.add("background-drop", idModal.value);
+  div.style.zIndex = window.modalZIndex.toString();
+  document.getElementsByTagName("body")[0].appendChild(div);
+})
+
+onBeforeUnmount(() => {
+  let div = document.getElementsByClassName(idModal.value)[0];
+  document.getElementsByTagName("body")[0].removeChild(div);
+})
+
+
 const emit = defineEmits(['closeDialog']);
 const closeDialog = () => {
   emit("closeDialog");
-};
+}
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .animatetop {
   -webkit-animation-name: animatetop;
   -webkit-animation-duration: 0.4s;
@@ -32,6 +60,18 @@ const closeDialog = () => {
   animation-name: animatebot;
   animation-duration: 0.4s;
 }
+
+.background-drop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  opacity: 0.5;
+  /* z-index: 500; */
+}
+
 
 @-webkit-keyframes animatetop {
   from {
@@ -80,8 +120,9 @@ const closeDialog = () => {
     opacity: 0;
   }
 }
+</style>
 
-
+<style lang="scss" scoped>
 .modal {
   position: fixed;
   width: 500px;
@@ -107,16 +148,16 @@ const closeDialog = () => {
 .button {
   border: none;
   color: white;
-  padding: 10px;
+  width: 50px;
+  height: 20px;
   text-align: center;
   font-size: 16px;
-  margin: 4px 2px;
+  margin: 8px 2px;
   cursor: pointer;
   border-radius: 4px;
   position: absolute;
-  bottom: 0;
   background-color: #007bff;
-  border-color: #007bff;
+  bottom: 0;
 }
 
 .title {
