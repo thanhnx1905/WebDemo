@@ -8,7 +8,7 @@
         <hr class="line">
         <slot name="content"></slot>
         <hr class="line-buttom">
-        <button @click=closeDialog() class="button">Close</button>
+        <div class="wrapper"><button @click=closeDialog() class="button">Close</button></div>
       </div>
     </div>
   </div>
@@ -45,6 +45,41 @@ const emit = defineEmits(['closeDialog']);
 const closeDialog = () => {
   emit("closeDialog");
 }
+
+let dragObj = null;
+let shiftX: number, shiftY: number;
+
+document.onmousedown = function (event: MouseEvent) {
+  let target = (event.target as HTMLElement).closest('.modal');
+  if (!target) return;
+  dragObj = target;
+  event.preventDefault();
+  dragObj.style.position = 'absolute';
+  dragObj.style.zIndex = 1000;
+
+  // Tính toán vị trí ban đầu của con trỏ chuột so với dialog
+  shiftX = event.clientX - dragObj.getBoundingClientRect().left;
+  shiftY = event.clientY - dragObj.getBoundingClientRect().top;
+};
+
+function moveAt(event: MouseEvent) {
+  // Điều chỉnh vị trí của dialog dựa trên vị trí ban đầu của con trỏ chuột
+  dragObj.style.left = event.pageX - shiftX + 'px';
+  dragObj.style.top = event.pageY - shiftY + 'px';
+}
+
+document.onmousemove = function (event: MouseEvent) {
+  if (dragObj) {
+    moveAt(event);
+  }
+};
+
+document.onmouseup = function () {
+  dragObj = null;
+};
+
+
+
 </script>
 <style lang="scss">
 .animatetop {
@@ -123,6 +158,80 @@ const closeDialog = () => {
 </style>
 
 <style lang="scss" scoped>
+.animatetop {
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+}
+
+.animatebottom {
+  -webkit-animation-name: animatebot;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatebot;
+  animation-duration: 0.4s;
+}
+
+.background-drop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  opacity: 0.5;
+  /* z-index: 500; */
+}
+
+
+@-webkit-keyframes animatetop {
+  from {
+    top: -300px;
+    opacity: 0;
+  }
+
+  to {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes animatetop {
+  from {
+    top: -300px;
+    opacity: 0;
+  }
+
+  to {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes animatebot {
+  from {
+    top: 0;
+    opacity: 1;
+  }
+
+  to {
+    top: -300px;
+    opacity: 0;
+  }
+}
+
+@keyframes animatebot {
+  from {
+    top: 0;
+    opacity: 1;
+  }
+
+  to {
+    top: -300px;
+    opacity: 0;
+  }
+}
+
 .modal {
   position: fixed;
   width: 500px;
@@ -141,23 +250,8 @@ const closeDialog = () => {
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.7);
   outline: none;
-  border-radius: 10px;
+  //border-radius: 10px;
   overflow: hidden;
-}
-
-.button {
-  border: none;
-  color: white;
-  width: 50px;
-  height: 20px;
-  text-align: center;
-  font-size: 16px;
-  margin: 8px 2px;
-  cursor: pointer;
-  border-radius: 4px;
-  position: absolute;
-  background-color: #007bff;
-  bottom: 0;
 }
 
 .title {
@@ -165,6 +259,29 @@ const closeDialog = () => {
   text-align: center;
   width: -webkit-fill-available;
   height: 40px;
+}
+
+.wrapper {
+  text-align: center;
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+}
+
+.button {
+  border: none;
+  color: white;
+  width: 60px;
+  height: 30px;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  background-color: #007bff;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  display: inline-block;
 }
 
 hr.line-buttom {
