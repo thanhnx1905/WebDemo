@@ -1,7 +1,7 @@
 <template>
     <div class="app-team">
         <h1>Team</h1>
-        <Modal v-if="showModal" @closeDialog="showModal = false">
+        <Modal v-if="showModal" @closeDialogAll="showModal = false">
             <template v-slot:title>
                 <div>Title</div>
             </template>

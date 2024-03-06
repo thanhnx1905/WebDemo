@@ -1,6 +1,6 @@
 <template>
   <div :id="idModal">
-    <div class="modal">
+    <div class="modal" @mousedown="modalMouseDown" @mouseup="modalMouseUp" @mousemove="modalMouseMove">
       <div class="modal-content">
         <div class="title">
           <slot name="title"></slot>
@@ -25,6 +25,7 @@ if (window.modalZIndex) {
 } else {
   window.modalZIndex = 10;
 }
+
 onMounted(() => {
 
   tag.value = document.getElementById(idModal.value);
@@ -41,40 +42,40 @@ onBeforeUnmount(() => {
 })
 
 
-const emit = defineEmits(['closeDialog']);
+const emit = defineEmits(['closeDialogAll']);
 const closeDialog = () => {
-  emit("closeDialog");
+  emit("closeDialogAll");
 }
 
 let dragObj = null;
 let shiftX: number, shiftY: number;
 
-document.onmousedown = function (event: MouseEvent) {
+const modalMouseDown = (event: MouseEvent) => {
   let target = (event.target as HTMLElement).closest('.modal');
   if (!target) return;
   dragObj = target;
   event.preventDefault();
   dragObj.style.position = 'absolute';
-  dragObj.style.zIndex = 1000;
+  //dragObj.style.zIndex = 1000;
 
   // Tính toán vị trí ban đầu của con trỏ chuột so với dialog
   shiftX = event.clientX - dragObj.getBoundingClientRect().left;
   shiftY = event.clientY - dragObj.getBoundingClientRect().top;
 };
 
-function moveAt(event: MouseEvent) {
+const moveAt = (event: MouseEvent) => {
   // Điều chỉnh vị trí của dialog dựa trên vị trí ban đầu của con trỏ chuột
   dragObj.style.left = event.pageX - shiftX + 'px';
   dragObj.style.top = event.pageY - shiftY + 'px';
 }
 
-document.onmousemove = function (event: MouseEvent) {
+const modalMouseMove = (event: MouseEvent) => {
   if (dragObj) {
     moveAt(event);
   }
 };
 
-document.onmouseup = function () {
+const modalMouseUp = () => {
   dragObj = null;
 };
 
@@ -158,80 +159,6 @@ document.onmouseup = function () {
 </style>
 
 <style lang="scss" scoped>
-.animatetop {
-  -webkit-animation-name: animatetop;
-  -webkit-animation-duration: 0.4s;
-  animation-name: animatetop;
-  animation-duration: 0.4s;
-}
-
-.animatebottom {
-  -webkit-animation-name: animatebot;
-  -webkit-animation-duration: 0.4s;
-  animation-name: animatebot;
-  animation-duration: 0.4s;
-}
-
-.background-drop {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: #000;
-  opacity: 0.5;
-  /* z-index: 500; */
-}
-
-
-@-webkit-keyframes animatetop {
-  from {
-    top: -300px;
-    opacity: 0;
-  }
-
-  to {
-    top: 0;
-    opacity: 1;
-  }
-}
-
-@keyframes animatetop {
-  from {
-    top: -300px;
-    opacity: 0;
-  }
-
-  to {
-    top: 0;
-    opacity: 1;
-  }
-}
-
-@-webkit-keyframes animatebot {
-  from {
-    top: 0;
-    opacity: 1;
-  }
-
-  to {
-    top: -300px;
-    opacity: 0;
-  }
-}
-
-@keyframes animatebot {
-  from {
-    top: 0;
-    opacity: 1;
-  }
-
-  to {
-    top: -300px;
-    opacity: 0;
-  }
-}
-
 .modal {
   position: fixed;
   width: 500px;
@@ -259,6 +186,9 @@ document.onmouseup = function () {
   text-align: center;
   width: -webkit-fill-available;
   height: 40px;
+  padding: 12px;
+  background-color: #1aad8d;
+  color: #fff;
 }
 
 .wrapper {
@@ -279,7 +209,7 @@ document.onmouseup = function () {
   font-size: 16px;
   cursor: pointer;
   border-radius: 4px;
-  background-color: #007bff;
+  background-color: #1aad8d;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: inline-block;
 }
