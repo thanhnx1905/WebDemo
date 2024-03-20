@@ -62,9 +62,39 @@ dependencies {
     compile group: 'javax.ejb', name: 'ejb-api', version: '3.0'
     
         // https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-multipart
-    compile group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version: '2.25.1'
+    //compile group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version: '2.25.1'
+    //compile group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '2.22.1'
         // https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-multipart-provider
-    compile group: 'org.jboss.resteasy', name: 'resteasy-multipart-provider', version: '2.1-beta-1'
+    //compile group: 'org.jboss.resteasy', name: 'resteasy-multipart-provider', version: '2.1-beta-1'
+    
+    //implementation group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.15.6.Final'
+    
+    // https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-server
+    //implementation group: 'org.glassfish.jersey.core', name: 'jersey-server', version: '2.15'
+    
+    //providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+    //compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.25.1'
+    
         // https://mvnrepository.com/artifact/commons-io/commons-io
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.10.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.10.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.10.5'
+    
+	
+	// inject
+	compile group: 'javax.inject', name: 'javax.inject', version: '1'
+	
+	// transaction
+	compile group: 'javax.transaction', name: 'javax.transaction-api', version: '1.2'
+	
+	// JPA
+	compile group: 'org.eclipse.persistence', name: 'javax.persistence', version: '2.1.1'
+	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.6.4'
+	
+	// Jackson
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.3'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
+
 }
