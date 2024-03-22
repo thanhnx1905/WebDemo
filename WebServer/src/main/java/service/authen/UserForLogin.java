@@ -1,20 +1,13 @@
-package webserver.service.authen;
-
-import java.util.List;
+package service.authen;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class User {
-
+public class UserForLogin {
 	private String username;
-
 	private String password;
-
-	private List<String> roles;
-
 }

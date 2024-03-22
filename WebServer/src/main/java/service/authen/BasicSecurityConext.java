@@ -1,4 +1,4 @@
-package webserver.service.authen;
+package service.authen;
 
 import java.security.Principal;
 

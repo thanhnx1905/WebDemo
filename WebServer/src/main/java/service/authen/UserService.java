@@ -1,7 +1,8 @@
-package webserver.service.authen;
+package service.authen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 
 import javax.ejb.Stateless;
 
@@ -21,6 +22,7 @@ public class UserService {
 		} else {
 			user.setRoles(new ArrayList<>());
 		}
+		user.setSid(UUID.randomUUID().toString());
 		return user;
 	}
 }

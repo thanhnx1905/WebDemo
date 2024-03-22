@@ -1,4 +1,4 @@
-package webserver.service.authen;
+package service.authen;
 
 public interface Role {
 	String ROLE_ADMIN = "Admin";

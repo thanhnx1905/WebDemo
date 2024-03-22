@@ -1,8 +1,9 @@
-package webserver.service.authen;
+package service.authen;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -14,11 +15,15 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import service.authen.test.TokenForAuthRefresh;
 
 public class JwTokenHelper {
 
 	// The privateKey is only valid for the given minutes
 	private static final long EXPIRATION_LIMIT_IN_MINUTES = 30;
+	
+	// The privateKey (refresh token) is only valid for the given minutes
+	private static final long EXPIRATION_REF_LIMIT_IN_MINUTES = 10080;//one week
 
 	// The JWT signature algorithm we will be using to sign the token
 	private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
@@ -28,20 +33,34 @@ public class JwTokenHelper {
 
 	private static final String ISSUER = "thanhnx";
 
-	public static String createJWT(User user) {
+	public static TokenForAuthRefresh createJWT(User user) {
+		return new TokenForAuthRefresh(createJWT(user, false), createJWT(user, true));
+	}
+
+	public static TokenForAuthRefresh createJWT(User user, Date dateExp) {
+		return new TokenForAuthRefresh(createJWT(user, false), createJWT(user, true, Optional.of(dateExp)));
+	}
+	
+	private static String createJWT(User user, boolean isRefreshToken) {
+		return createJWT(user, isRefreshToken, Optional.empty());
+	}
+	
+	private static String createJWT(User user, boolean isRefreshToken, Optional<Date> dateExp) {
 		long currentTimeInMillis = System.currentTimeMillis();
 		Date now = new Date(currentTimeInMillis);
 
 		// The privateKey is only valid for the next EXPIRATION_LIMIT_IN_MINUTES
-		long expirationTimeInMilliSeconds = TimeUnit.MINUTES.toMillis(EXPIRATION_LIMIT_IN_MINUTES);
-		Date expirationDate = new Date(currentTimeInMillis + expirationTimeInMilliSeconds);
+		long expirationTimeInMilliSeconds = TimeUnit.MINUTES
+				.toMillis(isRefreshToken ? EXPIRATION_REF_LIMIT_IN_MINUTES : EXPIRATION_LIMIT_IN_MINUTES);
+		Date expirationDate = dateExp.isPresent() ? dateExp.get() : new Date(currentTimeInMillis + expirationTimeInMilliSeconds);
 
 		// Will sign our JWT with our ApiKey secret
 		byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(SECRET_KEY);
 		Key signingKey = new SecretKeySpec(apiKeySecretBytes, SIGNATURE_ALGORITHM.getJcaName());
 		
 		// Sets the JWT Claims sub (subject) value
-        Claims claims = Jwts.claims().setSubject(user.getUsername());
+        Claims claims = Jwts.claims().setSubject(user.getSid());
+        claims.put("name", user.getUsername());
         claims.put("roles", user.getRoles());
 		
         // Let's set the JWT Claims
@@ -64,8 +83,9 @@ public class JwTokenHelper {
 	public static User getUserFromToken(String token) {
         final Claims claims = decodeJWT(token);
         User user = new User();
-        user.setUsername(claims.getSubject());
+        user.setUsername((String) claims.get("name"));
         user.setRoles((List<String>) claims.get("roles"));
+        user.setSid(claims.getSubject());
         return user;
     }
     
@@ -77,7 +97,13 @@ public class JwTokenHelper {
         return expiration.before(new Date());
     }
  
-    private static Date getExpirationDateFromToken(String token) {
+    public static boolean needToRefresh(String token, String tokenRefresh) {
+    	Date dateExp = getExpirationDateFromToken(token);
+    	Date dateExpFinished = getExpirationDateFromToken(tokenRefresh);
+    	return !dateExp.after(dateExpFinished);
+    }
+    
+    public static Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
  
