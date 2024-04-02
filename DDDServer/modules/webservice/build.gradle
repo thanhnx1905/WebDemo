@@ -1,0 +1,10 @@
+plugins {
+    id 'java-library'
+  }
+
+dependencies {
+    implementation project(':share')
+    implementation project(':modules:app')
+
+    // Thêm các dependency cần thiết khác cho module API
+}
