@@ -1,4 +1,4 @@
-package common;
+package database;
 
 import java.util.Optional;
 

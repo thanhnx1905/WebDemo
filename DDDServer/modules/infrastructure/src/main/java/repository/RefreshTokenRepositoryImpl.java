@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import database.DataConnection;
 import refreshtoken.RefreshToken;
 import refreshtoken.RefreshTokenRepository;
-import common.DataConnection;
 import entity.refreshtoken.ERefreshToken;
 import entity.refreshtoken.ERefreshTokenPK;
 
