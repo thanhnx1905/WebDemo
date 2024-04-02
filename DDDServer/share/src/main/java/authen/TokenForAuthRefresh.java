@@ -1,4 +1,4 @@
-package authen.test;
+package authen;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

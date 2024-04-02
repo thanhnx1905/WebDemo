@@ -19,7 +19,6 @@ import refreshtoken.RefreshToken;
 import refreshtoken.RefreshTokenRepository;
 import authen.session.UserSessionInfo;
 import authen.session.asynctask.SessionHelper;
-import authen.test.TokenForAuthRefresh;
 
 @Path("/auth")
 @Produces("application/json")
