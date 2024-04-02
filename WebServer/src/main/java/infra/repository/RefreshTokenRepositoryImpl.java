@@ -14,8 +14,8 @@ import infra.entity.refreshtoken.ERefreshTokenPK;
 public class RefreshTokenRepositoryImpl extends DataConnection implements RefreshTokenRepository {
 
 	@Override
-	public Optional<RefreshToken> findByKey(String sid) {
-		return this.findByKey(ERefreshToken.class, new ERefreshTokenPK(sid)).map(x -> x.toDomain());
+	public Optional<RefreshToken> findByKey(String tokenId) {
+		return this.findByKey(ERefreshToken.class, new ERefreshTokenPK(tokenId)).map(x -> x.toDomain());
 	}
 
 	@Override
@@ -24,8 +24,9 @@ public class RefreshTokenRepositoryImpl extends DataConnection implements Refres
 	}
 
 	@Override
-	public void removeByKey(String sid) {
-		this.removeByKey(ERefreshToken.class, new ERefreshTokenPK(sid));
+	public void removeByKey(String tokenId) {
+		this.removeByKey(ERefreshToken.class, new ERefreshTokenPK(tokenId));
+		this.em.flush();
 	}
 
 	@Override

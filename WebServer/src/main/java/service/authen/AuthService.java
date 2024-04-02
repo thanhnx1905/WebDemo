@@ -1,5 +1,6 @@
 package service.authen;
 
+import java.util.Date;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
@@ -16,7 +17,6 @@ import javax.ws.rs.core.Response.Status;
 
 import dom.refreshtoken.RefreshToken;
 import dom.refreshtoken.RefreshTokenRepository;
-import service.authen.session.SessionLoginInfo;
 import service.authen.session.UserSessionInfo;
 import service.authen.session.asynctask.SessionHelper;
 import service.authen.test.TokenForAuthRefresh;
@@ -28,10 +28,10 @@ public class AuthService {
 
 	@Inject
 	private UserService userService;
-	
+
 	@Inject
 	private HttpServletRequest httpRequest;
-	
+
 	@Inject
 	private RefreshTokenRepository repo;
 
@@ -47,59 +47,67 @@ public class AuthService {
 					.build();
 		}
 
-		//save session
+		// save session
 		saveSessionInfo(user);
-		
+
 		// Issue a token for the user
 		TokenForAuthRefresh token = JwTokenHelper.createJWT(user);
 		// create refresh token
-		if(repo.findByKey(user.getSid()).isPresent()) {
-			repo.removeByKey(user.getSid());
+		if (userLogin.getTokenId() != null && repo.findByKey(userLogin.getTokenId()).isPresent()) {
+			repo.removeByKey(userLogin.getTokenId());
 		}
-		repo.insertTokenExp(new RefreshToken(user.getSid(), token.getRefreshToken(),
-				JwTokenHelper.getExpirationDateFromToken(token.getRefreshToken())));
+		repo.insertTokenExp(new RefreshToken(token.getRefreshToken(), user.getSid(),
+				new Date()));
 
 		// Return the token on the response
 		return Response.ok(token).build();
 	}
-	
+
 	@POST
 	@Path("logout")
 	public Response logOut() {
-		if (SessionLoginInfo.context() != null) {
-			repo.removeByKey(SessionLoginInfo.context().getSid());
+		String authorizationHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+		if (authorizationHeader == null || authorizationHeader.isEmpty()) {
+			return Response.status(Status.SERVICE_UNAVAILABLE).build();
 		}
+
+		// (3) Extract the token from the Authorization header
+		String token = authorizationHeader.substring(AuthFilter.AUTHENTICATION_SCHEME.length()).trim();
+		repo.removeByKey(token);
 		return Response.ok().build();
 	}
-	
+
 	@POST
 	@Path("renew_session")
 	public Response reNewSession() {
 		// (1) Get Token Authorization from the header
 		String authorizationHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
-		if(authorizationHeader == null || authorizationHeader.isEmpty()) {
-			return Response.status(Status.REQUEST_TIMEOUT).build();
+		if (authorizationHeader == null || authorizationHeader.isEmpty()) {
+			return Response.status(Status.SERVICE_UNAVAILABLE).build();
 		}
 
 		// (3) Extract the token from the Authorization header
 		String token = authorizationHeader.substring(AuthFilter.AUTHENTICATION_SCHEME.length()).trim();
 		User user = JwTokenHelper.getUserFromToken(token);
-		TokenForAuthRefresh responseToken = JwTokenHelper.createJWT(user, JwTokenHelper.getExpirationDateFromToken(token));
-		Optional<RefreshToken> tokenSaved = repo.findByKey(user.getSid());
-		if(tokenSaved.isPresent()) {
-			tokenSaved.get().setTokenId(responseToken.getRefreshToken());
-			repo.updateTokenExp(tokenSaved.get());
+		Date dateExp = JwTokenHelper.getExpirationDateFromToken(token);
+		TokenForAuthRefresh responseToken = JwTokenHelper.createJWT(user, dateExp);
+		Optional<RefreshToken> tokenSaved = repo.findByKey(token);
+		if (tokenSaved.isPresent() && tokenSaved.get().validRenewSession(dateExp)) {
+			repo.removeByKey(token);
+			repo.insertTokenExp(tokenSaved.get().reNew(responseToken.getRefreshToken(), new Date()));
 			return Response.ok().entity(responseToken).type(MediaType.APPLICATION_JSON).build();
-		}else {
-			return Response.status(Status.REQUEST_TIMEOUT).build();
+		} else {
+			if (tokenSaved.isPresent())
+				repo.removeByKey(token);
+			return Response.status(Status.SERVICE_UNAVAILABLE).build();
 		}
-		
+
 	}
-	
+
 	private void saveSessionInfo(User user) {
-		 HttpSession session = httpRequest.getSession();
-		 session.setAttribute("user", new UserSessionInfo(user.getSid(), user.getUsername()));
-		 SessionHelper.setSession(Thread.currentThread().getId(), session);
+		HttpSession session = httpRequest.getSession();
+		session.setAttribute("user", new UserSessionInfo(user.getSid(), user.getUsername()));
+		SessionHelper.setSession(Thread.currentThread().getId(), session);
 
 	}
 }

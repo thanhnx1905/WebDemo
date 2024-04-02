@@ -16,7 +16,8 @@ import lombok.NoArgsConstructor;
 public class ERefreshTokenPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	@Column(name = "SID")
-	public String employeeID;
-
+	
+	@Column(name = "refresh_token_id")
+	public String tokenId;
+	
 }

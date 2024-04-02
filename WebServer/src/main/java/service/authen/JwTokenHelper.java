@@ -20,7 +20,7 @@ import service.authen.test.TokenForAuthRefresh;
 public class JwTokenHelper {
 
 	// The privateKey is only valid for the given minutes
-	private static final long EXPIRATION_LIMIT_IN_MINUTES = 30;
+	public static final long EXPIRATION_LIMIT_IN_MINUTES = 30;
 	
 	// The privateKey (refresh token) is only valid for the given minutes
 	private static final long EXPIRATION_REF_LIMIT_IN_MINUTES = 10080;//one week

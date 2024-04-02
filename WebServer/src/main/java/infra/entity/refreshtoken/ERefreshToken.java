@@ -24,19 +24,18 @@ public class ERefreshToken implements Serializable {
 	@EmbeddedId
 	public ERefreshTokenPK pk;
 
-	@Column(name = "TOKEN_ID")
-	private String tokenId;
+	@Column(name = "SID")
+	public String employeeID;
 
-
-	@Column(name = "EXP")
-	private Date dateExp;
+	@Column(name = "CHANGE_TIME")
+	public Date changeTime;
 
 	
 	public RefreshToken toDomain() {
-		return new RefreshToken(pk.employeeID, tokenId, dateExp);
+		return new RefreshToken(pk.tokenId, employeeID, changeTime);
 	}
 	
 	public static ERefreshToken toEntity(RefreshToken token) {
-		return new ERefreshToken(new ERefreshTokenPK(token.getSid()), token.getTokenId(), token.getDateExp());
+		return new ERefreshToken(new ERefreshTokenPK(token.getTokenId()), token.getSid(), token.getChangeDate());
 	}
 }
