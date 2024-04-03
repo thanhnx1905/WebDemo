@@ -1,4 +1,4 @@
-package refreshtoken;
+package database.refreshtoken;
 
 import java.util.Optional;
 

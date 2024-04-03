@@ -15,10 +15,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import refreshtoken.RefreshToken;
-import refreshtoken.RefreshTokenRepository;
 import authen.session.UserSessionInfo;
 import authen.session.asynctask.SessionHelper;
+import database.refreshtoken.RefreshToken;
+import database.refreshtoken.RefreshTokenRepository;
 
 @Path("/auth")
 @Produces("application/json")

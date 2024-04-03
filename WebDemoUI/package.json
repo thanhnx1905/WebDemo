@@ -43,6 +43,7 @@
   "dependencies": {
     "core-js": "^3.32.2",
     "styled-components": "^6.0.8",
+    "vue-facing-decorator": "^3.0.4",
     "vue-router": "^4.2.5"
   }
 }

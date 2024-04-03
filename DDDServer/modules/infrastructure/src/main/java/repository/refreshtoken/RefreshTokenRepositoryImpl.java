@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import database.DataConnection;
-import refreshtoken.RefreshToken;
-import refreshtoken.RefreshTokenRepository;
+import database.refreshtoken.RefreshToken;
+import database.refreshtoken.RefreshTokenRepository;
 import entity.refreshtoken.ERefreshToken;
 import entity.refreshtoken.ERefreshTokenPK;
 
