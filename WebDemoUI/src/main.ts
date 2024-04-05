@@ -1,6 +1,7 @@
 import {createApp} from 'vue';
 import App from './App.vue';
 import './static/global.scss';
+import './static/tailwind.css'
 import router from './router';
 //import Sidebar from './components/Sidebar.vue'
 

@@ -66,7 +66,8 @@ aside {
   transition: 0.2s ease-in-out;
 
   .img-icon {
-    width: 2rem;
+    width: 2rem !important;
+    max-width: fit-content;
   }
 
   .flex {
