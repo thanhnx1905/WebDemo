@@ -1,0 +1,53 @@
+
+.tv-table {
+    @apply table-fixed before:overflow-hidden min-w-full
+    
+}
+
+.tv-thead {
+   @apply bg-gray-300 text-xs border divide-x divide-y
+}
+
+.tv-th {
+    @apply px-2 py-1.5
+}
+
+.tv-tbody {
+    @apply border bg-gray-100
+}
+
+.tv-tr {
+    @apply divide-x divide-y last:border-b-0 px-2 py-1.5 text-left border hover:bg-gray-400/50
+}
+
+.tv-td {
+    @apply px-2 py-3.5 align-top table-cell last:border-b-0 text-2xl md:text-sm  w-14
+}
+
+
+.hard_left {
+    position:absolute;
+    *position: relative; /*ie7*/
+    left:0; 
+    width:50px;
+}
+.next_left {
+    position:absolute;
+    *position: relative; /*ie7*/
+    left:50px; 
+    width:50px;
+}
+
+.headcol {
+    position:absolute;
+    *position: relative; /*ie7*/
+    left:0; 
+    width:100px;
+}
+.outer {position:relative}
+.inner {
+    overflow-x:scroll;
+    overflow-y:visible;
+    width:300px; 
+    margin-left:100px;
+}
