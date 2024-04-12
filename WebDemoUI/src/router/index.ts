@@ -5,6 +5,7 @@ import About from '../views/About.vue'
 import Login from '../views/Login.vue'
 import Team from '../views/Team.vue'
 import Setting from '../views/Setting.vue'
+import Contact from '../views/Contact.vue'
 //import '../assets/ts/loaduicom.ts'
 
 const routes = [
@@ -17,17 +18,20 @@ const routes = [
         component: About
     },
     {
-        path: '/login',
-        component: Login
-    },
-    {
         path: '/team',
         component: Team
     },
-    ,
     {
         path: '/setting',
         component: Setting
+    },
+    {
+        path: '/contact',
+        component: Contact
+    },
+    {
+        path: '/login',
+        component: Login
     },
 ]
 

@@ -15,10 +15,11 @@ import MSidebarDetail from './components/common/MSidebarDetail'
 
 let mSidebarDetails : Array<MSidebarDetail> = [];
 mSidebarDetails.push(new MSidebarDetail("/", "home_house_icon.png", "Home"));
-mSidebarDetails.push(new MSidebarDetail("/about", "about_icon.png", "About"));
 mSidebarDetails.push(new MSidebarDetail("/team", "team_icon.png", "Team"));
-mSidebarDetails.push(new MSidebarDetail("/contact", "contact_icon.png", "Contact"));
 mSidebarDetails.push(new MSidebarDetail("/setting", "setting_icon.png", "Settings"));
+mSidebarDetails.push(new MSidebarDetail("/contact", "contact_icon.png", "Contact"));
+mSidebarDetails.push(new MSidebarDetail("/about", "about_icon.png", "About"));
+mSidebarDetails.push(new MSidebarDetail("/login", "login_icon.png", "Login"));
     
 const dataMenuSidebar = reactive(new MenuSidebar("logo.png", mSidebarDetails));
 </script>

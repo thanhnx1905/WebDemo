@@ -8,6 +8,6 @@
         "sourceMap": true,
     },
     "include": [
-        "./src/**/**/*", "postcss.config.js", "tailwind.config.js",
+        "./src/**/**/*", "postcss.config.js", "tailwind.config.js", "vue.config.js",
     ],
 }

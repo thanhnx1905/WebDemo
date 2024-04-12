@@ -13,11 +13,11 @@ public class UserService {
 		User user = new User();
 		user.setUsername(username);
 		user.setPassword("gpcoder");
-		if ("admin".equals(username)) {
+		if ("admin@gmail.com".equals(username)) {
 			user.setRoles(Arrays.asList(Role.ROLE_ADMIN));
-		} else if ("customer".equals(username)) {
+		} else if ("customer@gmail.com".equals(username)) {
 			user.setRoles(Arrays.asList(Role.ROLE_CUSTOMER));
-		} else if ("gpcoder".equals(username)) {
+		} else if ("gpcoder.@gmail.com".equals(username)) {
 			user.setRoles(Arrays.asList(Role.ROLE_ADMIN, Role.ROLE_CUSTOMER));
 		} else {
 			user.setRoles(new ArrayList<>());

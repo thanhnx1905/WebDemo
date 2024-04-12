@@ -12,6 +12,7 @@ module.exports = merge(common, {
         static: './dist',
         open: true,
         hot: true,
+        port: 3000
     },
 
     //dev rule

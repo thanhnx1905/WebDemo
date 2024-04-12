@@ -54,7 +54,7 @@ const modalMouseDown = (event: MouseEvent) => {
   let target = (event.target as HTMLElement).closest('.modal');
   if (!target) return;
   dragObj = target;
-  event.preventDefault();
+  //event.preventDefault();
   dragObj.style.position = 'absolute';
   //dragObj.style.zIndex = 1000;
 
