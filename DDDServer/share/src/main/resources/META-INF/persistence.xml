@@ -3,7 +3,7 @@
     <persistence-unit name="WebServer" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<jta-data-source>java:jboss/datasources/WebServer</jta-data-source>
-        <jar-file>WebServer.jar</jar-file>
+        <jar-file>infrastructure.jar</jar-file>
         <shared-cache-mode>NONE</shared-cache-mode>
     </persistence-unit>
 </persistence>

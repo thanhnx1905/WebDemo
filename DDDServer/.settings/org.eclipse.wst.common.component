@@ -2,5 +2,20 @@
 <project-modules id="moduleCoreId" project-version="1.5.0">
 	<wb-module deploy-name="DDDServer">
 		<property name="context-root" value="DDDServer"/>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/infrastructure/infrastructure">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/webservice/webservice">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/app/app">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/domain/domain">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/share/share">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
 	</wb-module>
 </project-modules>

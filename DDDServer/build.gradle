@@ -14,7 +14,7 @@
 plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
-    id 'war'
+    //id 'war'
     
 }
 
@@ -22,6 +22,25 @@ repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+}
+
+project(':') {
+  apply plugin: 'war'
+  apply plugin: 'eclipse'
+  apply plugin: 'eclipse-wtp'
+
+  dependencies {
+    compile project(':share')
+    compile project(':modules:domain')
+    compile project(':modules:infrastructure')
+    compile project(':modules:app')
+    compile project(':modules:webservice')
+    }
+
+   war {
+	    archiveFileName = 'DDDServer.war'
+	    destinationDir = file('build/dist')
+	}
 }
 
 subprojects {

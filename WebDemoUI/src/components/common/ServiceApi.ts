@@ -19,25 +19,24 @@ export default class ServiceApi {
 
     private static async fetchCommon<T>(refreshToken: boolean, api: string, param: any): Promise<T> {
 
-        const formDataJsonString = JSON.stringify(param);
+        //const formDataJsonString = JSON.stringify(param);
         const refresh_token: string = sessionStorage.getItem("refresh-token") == undefined ? "" : sessionStorage.getItem("refresh-token");
         const token: string = sessionStorage.getItem("token") == undefined ? "" : sessionStorage.getItem("token");
         const bearer: string = refreshToken ? refresh_token : token;
+        const headerCreates: HeadersInit = new Headers();
+        headerCreates.append('Accept', 'application/json'); // This one is enough for GET requests
+        headerCreates.append('Content-Type', 'application/json;charset=UTF-8'); // This one sends body
+        if (bearer != "") headerCreates.append('Bearer', bearer);
         const fetchOptions = {
             method: "POST",
-            mode: "no-cors" as RequestMode,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "Bearer": token
-            },
-            body: formDataJsonString,
+            headers: headerCreates,
+            body: JSON.stringify(param),
         };
 
         const response = await fetch(`${this.HOST}/${api}`, fetchOptions);
 
         if (!response.ok) {
-            const errorMessage = await response.text();
+            const errorMessage = await response.json();
             throw new Error(errorMessage);
         }
 
