@@ -21,6 +21,9 @@
 
         </Modal>
         <HomeCom @showDialog1="showDialog22"></HomeCom>
+        <br>
+        <div>{{ dataUser }}</div>
+
     </div>
 </template>
 <script lang="ts" setup>
@@ -29,10 +32,18 @@ import HomeCom from '../components/event/ButtonEvent.vue';
 import Modal from '../components/modal/ModalDialog.vue';
 import { TypeData } from '../components/common/TypeData';
 import InputCustom from '../components/validate/Input.vue'
+import ServiceApi from '../components/common/ServiceApi'
+
 const showModal = ref<Boolean>(false);
 const showDialog22 = (contenRecv: number) => {
     showModal.value = true;
 };
+const dataUser = ref<string>(null);
+ServiceApi.fetchApi("load/data").then((data: any) => {
+    dataUser.value = JSON.stringify(data);
+}).catch((ex) => {
+    dataUser.value = ex.message;
+})
 </script>
 <style lang="css" scoped>
 .app-team {

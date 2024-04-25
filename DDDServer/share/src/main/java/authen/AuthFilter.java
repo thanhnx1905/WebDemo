@@ -3,6 +3,7 @@ package authen;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.AccessDeniedException;
+import java.util.Optional;
 
 import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;
@@ -24,9 +25,9 @@ public class AuthFilter implements ContainerRequestFilter {
 
 	private static final String REALM = "thanhnx";
 	public static final String AUTHENTICATION_SCHEME = "Bearer";
-	
-    @Context
-    private ResourceInfo resourceInfo;
+
+	@Context
+	private ResourceInfo resourceInfo;
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -35,6 +36,7 @@ public class AuthFilter implements ContainerRequestFilter {
 
 		// (2) Validate the Authorization header
 		if (!isTokenBasedAuthentication(authorizationHeader)) {
+			checkRole(requestContext);
 			return;
 		}
 
@@ -43,9 +45,14 @@ public class AuthFilter implements ContainerRequestFilter {
 
 		try {
 
+			JwTokenHelper.isRefreshToken(token);
 			// (4) Validate the token
 			if (JwTokenHelper.isTokenExpired(token)) {
-				abortWithUnauthorized(requestContext);
+				if (!JwTokenHelper.isRefreshToken(token)) {
+					abortWithUnauthorized(requestContext, Optional.of("refresh token"));
+				} else {
+					abortWithUnauthorized(requestContext, Optional.of("token expired"));
+				}
 				return;
 			}
 
@@ -62,60 +69,60 @@ public class AuthFilter implements ContainerRequestFilter {
 
 	}
 
-	private void checkRole(ContainerRequestContext requestContext) throws IOException{
-		 Method method = resourceInfo.getResourceMethod();
+	private void checkRole(ContainerRequestContext requestContext) throws IOException {
+		Method method = resourceInfo.getResourceMethod();
 
-	        // @DenyAll on the method takes precedence over @RolesAllowed and @PermitAll
-	        if (method.isAnnotationPresent(DenyAll.class)) {
-	        	abortWithUnauthorized(requestContext);
-	        }
+		// @DenyAll on the method takes precedence over @RolesAllowed and @PermitAll
+		if (method.isAnnotationPresent(DenyAll.class)) {
+			abortWithUnauthorized(requestContext);
+		}
 
-	        // @RolesAllowed on the method takes precedence over @PermitAll
-	        RolesAllowed rolesAllowed = method.getAnnotation(RolesAllowed.class);
-	        if (rolesAllowed != null) {
-	            performAuthorization(rolesAllowed.value(), requestContext);
-	            return;
-	        }
+		// @RolesAllowed on the method takes precedence over @PermitAll
+		RolesAllowed rolesAllowed = method.getAnnotation(RolesAllowed.class);
+		if (rolesAllowed != null) {
+			performAuthorization(rolesAllowed.value(), requestContext);
+			return;
+		}
 
-	        // @PermitAll on the method takes precedence over @RolesAllowed on the class
-	        if (method.isAnnotationPresent(PermitAll.class)) {
-	            // Do nothing
-	            return;
-	        }
+		// @PermitAll on the method takes precedence over @RolesAllowed on the class
+		if (method.isAnnotationPresent(PermitAll.class)) {
+			// Do nothing
+			return;
+		}
 
-	        // @DenyAll can't be attached to classes
+		// @DenyAll can't be attached to classes
 
-	        // @RolesAllowed on the class takes precedence over @PermitAll on the class
-	        rolesAllowed = 
-	            resourceInfo.getResourceClass().getAnnotation(RolesAllowed.class);
-	        if (rolesAllowed != null) {
-	            performAuthorization(rolesAllowed.value(), requestContext);
-	        }
+		// @RolesAllowed on the class takes precedence over @PermitAll on the class
+		rolesAllowed = resourceInfo.getResourceClass().getAnnotation(RolesAllowed.class);
+		if (rolesAllowed != null) {
+			performAuthorization(rolesAllowed.value(), requestContext);
+		}
 
-	        // @PermitAll on the class
-	        if (resourceInfo.getResourceClass().isAnnotationPresent(PermitAll.class)) {
-	            // Do nothing
-	            return;
-	        }
+		// @PermitAll on the class
+		if (resourceInfo.getResourceClass().isAnnotationPresent(PermitAll.class)) {
+			// Do nothing
+			return;
+		}
 
-	    }
-
-	    /**
-	     * Perform authorization based on roles.
-	     *
-	     * @param rolesAllowed
-	     * @param requestContext
-	     */
-	    private void performAuthorization(String[] rolesAllowed, 
-	                                      ContainerRequestContext requestContext) throws AccessDeniedException {
-	        for (final String role : rolesAllowed) {
-	            if (requestContext.getSecurityContext().isUserInRole(role)) {
-	                return;
-	            }
-	        }
-
-	        abortWithUnauthorized(requestContext);
 	}
+
+	/**
+	 * Perform authorization based on roles.
+	 *
+	 * @param rolesAllowed
+	 * @param requestContext
+	 */
+	private void performAuthorization(String[] rolesAllowed, ContainerRequestContext requestContext)
+			throws AccessDeniedException {
+		for (final String role : rolesAllowed) {
+			if (requestContext.getSecurityContext().isUserInRole(role)) {
+				return;
+			}
+		}
+
+		abortWithUnauthorized(requestContext);
+	}
+
 	private boolean isTokenBasedAuthentication(String authorizationHeader) {
 
 		// Check if the Authorization header is valid
@@ -126,15 +133,19 @@ public class AuthFilter implements ContainerRequestFilter {
 	}
 
 	private void abortWithUnauthorized(ContainerRequestContext requestContext) {
+		abortWithUnauthorized(requestContext, Optional.empty());
+	}
+
+	private void abortWithUnauthorized(ContainerRequestContext requestContext, Optional<String> errorMsg) {
 
 		// Abort the filter chain with a 401 status code response
 		// The WWW-Authenticate header is sent along with the response
 		Response respone = Response.status(Response.Status.UNAUTHORIZED) // 401 Unauthorized
 				.header(HttpHeaders.WWW_AUTHENTICATE, AUTHENTICATION_SCHEME + " realm=\"" + REALM + "\"")
-				.entity("You cannot access this resource") // the response entity
+				.entity(errorMsg.isPresent() ? errorMsg.get() : "You cannot access this resource") // the response
+																									// entity
 				.build();
 		requestContext.abortWith(respone);
 	}
-	
-	    
+
 }

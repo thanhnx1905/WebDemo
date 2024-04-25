@@ -1,33 +1,37 @@
 <template>
-    <div id="visa">
-
+    <div id="loginform" v-if="!logged">
         <form>
             <div class="imgcontainer">
                 <img src="../assets/img/img_avatar2.png" alt="Avatar" class="avatar">
             </div>
-
             <div class="container">
                 <label for="email">Email Address:</label> <br>
                 <InputCustom :typeData="TypeData.EMAIL" v-model="parentEmail" /> <br>
                 <label for="password">Password:</label> <br>
-                <InputCustom  :typeData="TypeData.PASSWORD" v-model="parentPassword"/><br>
+                <InputCustom :typeContent="typePassword" :typeData="TypeData.PASSWORD" v-model="parentPassword" /><br>
                 <button type="submit" @click="registerInfo">Login</button>
                 <label>
                     <input type="checkbox" v-model="checkData" name="remember"> Remember me
                 </label>
             </div>
-
             <div class="container" style="background-color:#f1f1f1">
                 <span class="register">Register <a href="#">Register?</a></span>
                 <span class="psw">Forgot <a href="#">password?</a></span>
             </div>
         </form>
     </div>
+    <div id="logoutform" v-else>
+        <div><label for="email">{{loginInfo}}</label> <br>
+        <button type="submit" class = "logout" @click="logout">Logout</button>
+        </div>
+    </div>
+    <ModalInfoOk ref="modalInfoOk" />
 </template>
 <script lang="ts" src="./Login.ts">
 </script>
 <style lang="css" scoped>
-#visa {
+#loginform,
+#logoutform {
     margin: auto;
 }
 

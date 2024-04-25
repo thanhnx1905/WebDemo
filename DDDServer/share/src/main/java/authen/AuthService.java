@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -43,7 +44,7 @@ public class AuthService {
 		if (user == null || !user.getPassword().equals(userLogin.getPassword())) {
 			return Response.status(Response.Status.FORBIDDEN) // 403 Forbidden
 					.entity("Wrong username or password") // the response entity
-					.build();
+					.type(MediaType.APPLICATION_JSON).build();
 		}
 
 		// save session
@@ -55,8 +56,7 @@ public class AuthService {
 		if (userLogin.getTokenId() != null && repo.findByKey(userLogin.getTokenId()).isPresent()) {
 			repo.removeByKey(userLogin.getTokenId());
 		}
-		repo.insertTokenExp(new RefreshToken(token.getRefreshToken(), user.getSid(),
-				new Date()));
+		repo.insertTokenExp(new RefreshToken(token.getRefreshToken(), user.getSid(), new Date()));
 
 		// Return the token on the response
 		return Response.ok(token).build();
@@ -64,7 +64,7 @@ public class AuthService {
 
 	@POST
 	@Path("logout")
-	public Response logOut() {
+	public Response logOut(@Context HttpServletRequest httpRequest) {
 		String authorizationHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
 		if (authorizationHeader == null || authorizationHeader.isEmpty()) {
 			return Response.status(Status.SERVICE_UNAVAILABLE).build();
@@ -75,10 +75,19 @@ public class AuthService {
 		repo.removeByKey(token);
 		return Response.ok().build();
 	}
+	
+	@POST
+	@Path("remove")
+	public Response removeToken(String token) {
+		repo.removeByKey(token);
+		return Response.ok().build();
+	}
+
+	
 
 	@POST
 	@Path("renew_session")
-	public Response reNewSession() {
+	public Response reNewSession(@Context HttpServletRequest httpRequest) {
 		// (1) Get Token Authorization from the header
 		String authorizationHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
 		if (authorizationHeader == null || authorizationHeader.isEmpty()) {
@@ -98,7 +107,7 @@ public class AuthService {
 		} else {
 			if (tokenSaved.isPresent())
 				repo.removeByKey(token);
-			return Response.status(Status.SERVICE_UNAVAILABLE).build();
+			return Response.status(Status.SERVICE_UNAVAILABLE).entity("The account is logged in on another device").build();
 		}
 
 	}

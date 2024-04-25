@@ -20,17 +20,13 @@ class InputCustom extends Vue {
     })
     required?: boolean;
 
-
+    @Prop({
+        default: "text"
+    })
     typeContent?: string = "text";
 
     public beforeCreate() {
         this.msg = '';
-        this.typeContent = '';
-        if (this.typeData == TypeData.PASSWORD) {
-            this.typeContent = "password"
-        } else {
-            this.typeContent = "text"
-        }
     }
 
     @Emit("update:modelValue")

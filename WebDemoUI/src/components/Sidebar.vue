@@ -1,7 +1,7 @@
 <template>
   <aside :class="`${is_expanded ? 'is-expanded' : ''}`">
     <div class="logo">
-      <img :src="require(`../assets/img/${menuSidebar.logoURL}`)" alt="Vue" />
+      <img :src="require(`../assets/img/${iconLogin}`)" alt="Vue" />
     </div>
 
     <div class="menu-toggle-wrap">
@@ -25,7 +25,7 @@
         menuSidebar.mSidebarDetail.length - 1,
         menuSidebar.mSidebarDetail.length
       )" :to="item.url" :key="index" class="button">
-        <span class="material-icons"><img class="img-icon" :src="require(`../assets/img/${item.srcPath}`)"  /></span>
+        <span class="material-icons"><img class="img-icon" :src="require(`../assets/img/${iconPageLogin}`)"  /></span>
         <span class="text">{{ item.menuName }}</span>
       </router-link>
     </div>
@@ -33,12 +33,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineExpose } from "vue";
+import { ref, defineExpose, computed } from "vue";
 import { defineProps } from "vue";
 import { PropType } from "vue";
 import MenuSidebar from "./common/MenuSidebar";
+import { useStore } from 'vuex'
 
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true");
+
+const store = useStore();
+
+const iconLogin = computed(() => store.state.iconLogin);
+const iconPageLogin = computed(() => store.state.iconPageLogin);
 
 const ToggleMenu = () => {
   is_expanded.value = !is_expanded.value;
