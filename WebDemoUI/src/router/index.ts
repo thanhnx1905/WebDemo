@@ -8,10 +8,11 @@ import Setting from '../views/Setting.vue'
 import Contact from '../views/Contact.vue'
 //import '../assets/ts/loaduicom.ts'
 
+//https://router.vuejs.org/guide/advanced/navigation-guards.html
 const routes = [
     {
         path: '/',
-        component: Home
+        component: Home,
     },
     {
         path: '/about',
@@ -19,7 +20,15 @@ const routes = [
     },
     {
         path: '/team',
-        component: Team
+        component: Team,
+        beforeEnter: (to: any, from: any, next: any) => {
+            const logged: boolean = sessionStorage.getItem("logged") == "true" ? true : false;
+            if (logged) {
+                next();
+            } else {
+                next({ path: '/login' });
+            }
+        }
     },
     {
         path: '/setting',
@@ -32,12 +41,13 @@ const routes = [
     {
         path: '/login',
         component: Login
-    },
+    }
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),
-    routes: routes
+    history: createWebHistory(),
+    routes: routes,
+    
 })
-
 export default router
+

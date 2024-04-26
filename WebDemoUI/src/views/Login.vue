@@ -1,6 +1,6 @@
 <template>
     <div id="loginform" v-if="!logged">
-        <form>
+        <div class = "form">
             <div class="imgcontainer">
                 <img src="../assets/img/img_avatar2.png" alt="Avatar" class="avatar">
             </div>
@@ -18,7 +18,7 @@
                 <span class="register">Register <a href="#">Register?</a></span>
                 <span class="psw">Forgot <a href="#">password?</a></span>
             </div>
-        </form>
+        </div>
     </div>
     <div id="logoutform" v-else>
         <div><label for="email">{{loginInfo}}</label> <br>
@@ -35,7 +35,7 @@
     margin: auto;
 }
 
-form {
+.form {
     border: 3px solid #f1f1f1;
     display: flex;
     flex-direction: column;

@@ -10,4 +10,21 @@ const app = createApp(App);
 app.use(router);
 app.use(store);
 //app.component("sidebar-component", Sidebar)
-app.mount('#app');
+
+// const RefreshMixin = {
+//     beforeMount() {
+//       window.addEventListener('beforeunload', this.handleRefresh);
+//     },
+//     beforeUnmount() {
+//       window.removeEventListener('beforeunload', this.handleRefresh);
+//     },
+//     methods: {
+//       handleRefresh(event) {
+//         // Logic xử lý khi refresh page
+//         // Nếu bạn muốn ngăn chặn việc refresh, bạn có thể sử dụng event.preventDefault()
+//         // event.preventDefault();
+//       }
+//     }
+//   }
+// app.mixin(RefreshMixin);
+ app.mount('#app');

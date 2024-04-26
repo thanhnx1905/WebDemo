@@ -17,7 +17,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'Vue Sample',
             favicon: path.resolve(__src, 'static', 'favicon.ico'),
-            template: path.resolve(__src, 'templates', 'index.html'),
+            template: path.resolve(__src, 'index.html'),
         }),
         new VueLoaderPlugin(),
     ],
